@@ -5,7 +5,7 @@ Capturing all the commands used in the video series by Thomas Jung - https://www
 ## Part 1 - Project setup and first DB build
 
 
-```
+```bash
 npm init hana-opensap-cloud --add mta,hana,pipeline
 
 npm install
@@ -50,4 +50,18 @@ npm start # Deploys to container
 
 # Open the database explorer
 hana-cli opendbx
+```
+
+## Part 2 - Designing the data model
+
+No new commands introduced. Mostly updating the ./db/schema/common.cds and adding data in ./db/csv
+
+```bash
+cds build
+
+# Navigate to ./db
+cd db
+
+# Deploy to HANA Cloud
+npm start
 ```
