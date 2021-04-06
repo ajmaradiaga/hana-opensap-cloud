@@ -1,6 +1,8 @@
 # Commands
 
-## Part 1
+Capturing all the commands used in the video series by Thomas Jung - https://www.youtube.com/watch?v=t3nIXxibmso&list=PL6RpkC85SLQDjdUsv1ENsBG43PorsSmbS&index=56
+
+## Part 1 - Project setup and first DB build
 
 
 ```
