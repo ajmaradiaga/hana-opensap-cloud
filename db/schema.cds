@@ -4,6 +4,7 @@ using from './schema/purchaseOrder';
 using from './schema/conversions';
 using from './schema/log';
 using from './schema/SFLIGHT';
+using from './schema/import';
 
 entity Base {
     key ID : Integer;

@@ -33,6 +33,15 @@
                     }
                 },
                 {
+                    "src": "user_db",
+                    "for": "hana",
+                    "options": {
+                        "model": [
+                            "user_db"
+                        ]
+                    }
+                },
+                {
                     "src": "srv",
                     "for": "node-cf",
                     "options": {

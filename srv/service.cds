@@ -11,10 +11,13 @@ using {
 } from '../db/schema';
 
 
+using BUYER as BuyerView from '../db/schema';
+using USERDATA_USER_LOCAL as UserDetails from '../db/schema';
+
 service MasterDataService @(path : '/MasterDataService') {
     entity Addresses                                             as projection on Addr;
     entity Employees                                             as projection on Empl;
-    // entity User                                                  as projection on UserDetails;
+    entity User                                                  as projection on UserDetails;
     entity BusinessPartners @(title : '{i18n>businessParnters}') as projection on BP;
 
     entity Products @(title : '{i18n>products}')                 as projection on Prod {
