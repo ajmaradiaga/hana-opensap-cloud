@@ -11,7 +11,7 @@ using {
 } from '../db/schema';
 
 
-service OPENSAP_MD @(path : '/MasterDataService') {
+service MasterDataService @(path : '/MasterDataService') {
     entity Addresses                                             as projection on Addr;
     entity Employees                                             as projection on Empl;
     // entity User                                                  as projection on UserDetails;

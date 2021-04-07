@@ -7,7 +7,7 @@ using {
 } from '@sap/cds/common';
 
 using {opensap.common} from './common';
-// using {opensap.PurchaseOrder} from './purchaseOrder';
+using {opensap.PurchaseOrder} from './purchaseOrder';
 
 namespace opensap.MD;
 
@@ -142,40 +142,40 @@ define view BPAddrExt as
         address.street || ', ' || address.city as FULLADDRESS
     };
 
-// define view BPView as
-//     select from BusinessPartners
-//     mixin {
-//         ORDERS : Association[ * ] to PurchaseOrder.Headers
-//                      on ORDERS.partner.ID = $projection.ID;
-//     }
-//     into {
-//         BusinessPartners.ID,
-//         ORDERS
-//     };
+define view BPView as
+    select from BusinessPartners
+    mixin {
+        ORDERS : Association[ * ] to PurchaseOrder.Headers
+                     on ORDERS.partner.ID = $projection.ID;
+    }
+    into {
+        BusinessPartners.ID,
+        ORDERS
+    };
 
-// view BPOrdersView as
-//     select from BPView {
-//         ID,
-//         ORDERS[lifecycleStatus = 'N'].ID as orderId
-//     };
+view BPOrdersView as
+    select from BPView {
+        ID,
+        ORDERS[lifecycleStatus = 'N'].ID as orderId
+    };
 
-// view BPOrders2View as
-//     select from BPView {
-//         ID,
-//         ORDERS[lifecycleStatus = 'N'].ID          as orderId,
-//         ORDERS[lifecycleStatus = 'N'].grossAmount as grossAmt
+view BPOrders2View as
+    select from BPView {
+        ID,
+        ORDERS[lifecycleStatus = 'N'].ID          as orderId,
+        ORDERS[lifecycleStatus = 'N'].grossAmount as grossAmt
 
-//     };
+    };
 
-// view BPOrders3View as
-//     select from BPView {
-//         ID,
-//         ORDERS[lifecycleStatus = 'N'].ID          as orderId,
-//         ORDERS[lifecycleStatus = 'N'].grossAmount as grossAmt,
-//         ORDERS[lifecycleStatus = 'N'].item[netAmount > 200].product.productId,
-//         ORDERS[lifecycleStatus = 'N'].item[netAmount > 200].netAmount
+view BPOrders3View as
+    select from BPView {
+        ID,
+        ORDERS[lifecycleStatus = 'N'].ID          as orderId,
+        ORDERS[lifecycleStatus = 'N'].grossAmount as grossAmt,
+        ORDERS[lifecycleStatus = 'N'].item[netAmount > 200].product.productId,
+        ORDERS[lifecycleStatus = 'N'].item[netAmount > 200].netAmount
 
-//     };
+    };
 
 define view BuyerView as
     select from BusinessPartners {
@@ -414,45 +414,45 @@ entity ProductLog {
         LOGTEXT   : String(500);
 };
 
-// define view ProductViewSub as
-//     select from Products as prod {
-//         productId as ![Product_Id],
-//         (
-//             select from PurchaseOrder.Items as a {
-//                 sum(
-//                     grossAmount
-//                 ) as SUM
-//             }
-//             where
-//                 a.product.productId = prod.productId
-//         )         as PO_SUM
-//     };
+define view ProductViewSub as
+    select from Products as prod {
+        productId as ![Product_Id],
+        (
+            select from PurchaseOrder.Items as a {
+                sum(
+                    grossAmount
+                ) as SUM
+            }
+            where
+                a.product.productId = prod.productId
+        )         as PO_SUM
+    };
 
-// define view ProductView as
-//     select from Products
-//     mixin {
-//         PO_ORDERS : Association[ * ] to PurchaseOrder.ItemView
-//                         on PO_ORDERS.ProductId = $projection.![Product_Id];
-//     }
-//     into {
-//         productId                  as![Product_Id],
-//         name,
-//         desc,
-//         category                   as![Product_Category],
-//         currency.code              as![Product_Currency],
-//         price                      as![Product_Price],
-//         typeCode                   as![Product_TypeCode],
-//         weightMeasure              as![Product_WeightMeasure],
-//         weightUnit                 as![Product_WeightUnit],
-//         partner.ID                 as![Supplier_Id],
-//         partner.companyName        as![Supplier_CompanyName],
-//         partner.address.city       as![Supplier_City],
-//         partner.address.postalCode as![Supplier_PostalCode],
-//         partner.address.street     as![Supplier_Street],
-//         partner.address.building   as![Supplier_Building],
-//         partner.address.country    as![Supplier_Country],
-//         PO_ORDERS
-//     };
+define view ProductView as
+    select from Products
+    mixin {
+        PO_ORDERS : Association[ * ] to PurchaseOrder.ItemView
+                        on PO_ORDERS.ProductId = $projection.![Product_Id];
+    }
+    into {
+        productId                  as![Product_Id],
+        name,
+        desc,
+        category                   as![Product_Category],
+        currency.code              as![Product_Currency],
+        price                      as![Product_Price],
+        typeCode                   as![Product_TypeCode],
+        weightMeasure              as![Product_WeightMeasure],
+        weightUnit                 as![Product_WeightUnit],
+        partner.ID                 as![Supplier_Id],
+        partner.companyName        as![Supplier_CompanyName],
+        partner.address.city       as![Supplier_City],
+        partner.address.postalCode as![Supplier_PostalCode],
+        partner.address.street     as![Supplier_Street],
+        partner.address.building   as![Supplier_Building],
+        partner.address.country    as![Supplier_Country],
+        PO_ORDERS
+    };
 
 define view ProductsValueHelp as
     select from Products {
@@ -586,14 +586,14 @@ define view ProductsConsumption as
         partner.address.country    as![Supplier_Country]
     };
 
-// define view ProductValuesView as
-//     select from ProductView {
-//         Product_Id,
-//         PO_ORDERS.CurrencyCode as![CurrencyCode],
-//         sum(
-//             PO_ORDERS.Amount
-//         )                      as![POGrossAmount]
-//     }
-//     group by
-//         Product_Id,
-//         PO_ORDERS.CurrencyCode;
+define view ProductValuesView as
+    select from ProductView {
+        Product_Id,
+        PO_ORDERS.CurrencyCode as![CurrencyCode],
+        sum(
+            PO_ORDERS.Amount
+        )                      as![POGrossAmount]
+    }
+    group by
+        Product_Id,
+        PO_ORDERS.CurrencyCode;
