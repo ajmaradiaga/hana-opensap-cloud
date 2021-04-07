@@ -65,3 +65,17 @@ cd db
 # Deploy to HANA Cloud
 npm start
 ```
+
+## Part 3 & 4 - Building the data model
+
+No new commands introduced. Mostly updating the ./db/schema/ and including native HANA objects in ./db/src -> constraints, data, indexes
+
+```bash
+cds build
+
+# Navigate to ./db
+cd db
+
+# Deploy to HANA Cloud
+npm start
+```
