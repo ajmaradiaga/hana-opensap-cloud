@@ -79,3 +79,58 @@ cd db
 # Deploy to HANA Cloud
 npm start
 ```
+
+## Part 5 - Cross access schema
+
+Setup of the User Provided Service, how to create hdbgrants and finally creating synonyms to the foreign schema.
+
+```sql
+-----------
+-- USER ---
+-----------
+
+-- UPS User provided service
+CREATE USER CUPS_SFLIGHT PASSWORD "HANARocks01" SET PARAMETER CLIENT = '001' SET USERGROUP DEFAULT;
+
+-- Disable changing the password of the user just created
+ALTER USER CUPS_SFLIGHT DISABLE PASSWORD LIFETIME;
+
+-- Grant option, so it can be granted to other users
+GRANT SELECT ON SCHEMA SFLIGHT TO CUPS_SFLIGHT WITH GRANT OPTION;
+
+GRANT SELECT METADATA ON SCHEMA SFLIGHT TO CUPS_SFLIGHT WITH GRANT OPTION;
+
+-----------
+-- ROLE ---
+-----------
+
+-- Creating role
+CREATE ROLE SFLIGHT_CONTAINER_ACCESS;
+
+-- Granting access
+GRANT SELECT, SELECT METADATA ON SCHEMA SFLIGHT TO SFLIGHT_CONTAINER_ACCESS WITH GRANT OPTION;
+
+-- Assign role to previously created user. ADMIN_OPTION so it can give the access to other users. Similar to GRANT_OPTION above.
+GRANT SFLIGHT_CONTAINER_ACCESS TO CUPS_SFLIGHT WITH ADMIN OPTION;
+
+-- GRANT OPTION, ADMIN OPTION -> Pass on the acces to our container technical users
+
+```
+
+```bash
+# Create User Provider Service
+cf cups CROSS_SCHEMA_SFLIGHT -p "{\"user\": \"CUPS_SFLIGHT\", \"password\": \"HANARocks01\", \"driver\": \"com.sap.db.jdbc.Driver\", \"tags\": [\"hana\"], \"schema\": \"SFLIGHT\" }"
+
+# List services - The new CROSS_SCHEMA_FLIGHT should be listed
+cf services
+```
+
+Tell our HDI container to use the UPS to perform grant to our container technical users -> create cfg folder and SFLIGHT.hdgrants.
+
+Create synonyms to be able to access SFLIGHT -> synonyms folder in db/src/. Grant access in our HDI container to a foreign schema - SFLIGHT
+
+```bash
+# Get table in CDS format
+$ hana-cli inspectTable -o cds
+$ hana-cli inspectTable SFLIGHT SBOOK -o cds
+```
