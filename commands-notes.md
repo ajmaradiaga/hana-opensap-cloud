@@ -134,3 +134,53 @@ Create synonyms to be able to access SFLIGHT -> synonyms folder in db/src/. Gran
 $ hana-cli inspectTable -o cds
 $ hana-cli inspectTable SFLIGHT SBOOK -o cds
 ```
+
+## Part 6 - Cross container access
+
+```bash 
+# Create new HDI container
+hana-cli createModule -f user_db
+
+# Download the HDI deployer
+cd user_db
+npm install
+
+# Check services
+cf services
+
+# Create HANA hdi-shared service
+cf create-service hana hdi-shared hana-opensap-cloud-user-db
+
+# Create the default service key
+cf create-service-key hana-opensap-cloud-user-db default
+
+# Download service key and store it in default-env.json
+hana-cli serviceKey hana-opensap-cloud-user-db default
+
+# Copy new components and deploy defined in user_db folder
+cp -r ~/code/forks/hana-opensap-cloud-2020/user_db/src/defaults src/
+cp -r ~/code/forks/hana-opensap-cloud-2020/user_db/src/models src/
+cp -r ~/code/forks/hana-opensap-cloud-2020/user_db/src/procedures src/
+cp -r ~/code/forks/hana-opensap-cloud-2020/user_db/src/roles src/
+cp -r ~/code/forks/hana-opensap-cloud-2020/user_db/src/synonyms src/
+npm start
+
+# Grant cross container access. Changes in other project files:
+# - The default-env.json included in db/. Add credentials from the user_db/default-env.json
+# - mta.yaml add user_db module
+# - Add the build steps in the main package.json
+cd ..; cd db
+cp -r ~/code/forks/hana-opensap-cloud-2020/db/cfg/user.hdb src/
+cp -r ~/code/forks/hana-opensap-cloud-2020/db/cfg/user.hdbgrants cfg/
+cp -r ~/code/forks/hana-opensap-cloud-2020/db/cfg/user.hdbsynonymconfig cfg/
+cp -r ~/code/forks/hana-opensap-cloud-2020/db/src/synonyms/user.hdbsynonym src/synonyms/
+npm start
+
+# Validate synonyms and get cds definition of table
+hana-cli inspectTable 61E06B1D28D5436BA534877EDF7CFCB5 USERDATA_USER -o cds
+
+cds build
+cds serve
+```
+
+Expose in srv/service.cds by adding the reference.
