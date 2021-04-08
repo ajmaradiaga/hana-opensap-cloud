@@ -184,3 +184,9 @@ cds serve
 ```
 
 Expose in srv/service.cds by adding the reference.
+
+## Part 7 - Calculation views
+
+Create calculation view in Business Application Studio - Step by step how to: [https://saphanajourney.com/hana-cloud/learning-article/how-to-create-a-calculation-view-with-sap-web-ide/](https://saphanajourney.com/hana-cloud/learning-article/how-to-create-a-calculation-view-with-sap-web-ide/)
+
+Localised the calculation view, e.g. ./db/src/models/BUYER_de.properties and created a synonym for when the calculation view contains a namespace.
