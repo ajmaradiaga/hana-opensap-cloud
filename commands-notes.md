@@ -190,3 +190,22 @@ Expose in srv/service.cds by adding the reference.
 Create calculation view in Business Application Studio - Step by step how to: [https://saphanajourney.com/hana-cloud/learning-article/how-to-create-a-calculation-view-with-sap-web-ide/](https://saphanajourney.com/hana-cloud/learning-article/how-to-create-a-calculation-view-with-sap-web-ide/)
 
 Localised the calculation view, e.g. ./db/src/models/BUYER_de.properties and created a synonym for when the calculation view contains a namespace.
+
+## Part 8 - SQL Script
+
+Added scripts for functions, procedures in ./db/src folder
+
+```bash
+$ cd db
+$ npm start
+```
+
+## Part 9 - Service Handler
+
+Updated definition of service.cds to include path for implementations. Also, updated the paths to the services. Added the PO service
+
+```bash
+$ cds build
+$ cd db; npm start
+$ cd ..; cds serve
+```
