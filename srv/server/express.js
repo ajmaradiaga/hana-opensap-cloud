@@ -6,8 +6,8 @@ module.exports = function (app) {
 	let appContext = logging.createAppContext({})
 	app.logger = appContext.createLogContext().getLogger('/Application')
 
-	// const swagger = require('./swagger')
-	// app.swagger = new swagger(app)
+	const swagger = require('./swagger')
+	app.swagger = new swagger(app)
     // require('./expressSecurity')(app)
     
 	const xsenv = require("@sap/xsenv")

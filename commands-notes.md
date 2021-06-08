@@ -219,3 +219,13 @@ $ npm install
 $ cds build
 $ cds serve
 ```
+
+## Part 12 - Swagger UI
+
+Added Swagger UI and a bunch of exercises which shows how we can interact from Node with HANA DB by injecting the DB connection as middleware. 
+
+```bash
+$ cds serve
+```
+
+Navigate to https://service.com/api/api-docs

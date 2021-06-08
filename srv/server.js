@@ -75,5 +75,16 @@ module.exports = async (o) => {
 
     o.app.httpServer = await cds.server(o)
 
+    //Load routes
+    const glob = require('glob')
+    let routesDir = path.join(global.__base, 'routes/**/*.js')
+    let files = glob.sync(routesDir)
+    this.routerFiles = files;
+    if (files.length !== 0) {
+        for (let file of files) {
+            await require(file)(app, o.app.httpServer)
+        }
+    }
+
     return o.app.httpServer
 }
