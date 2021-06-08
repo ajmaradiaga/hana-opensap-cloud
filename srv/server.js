@@ -1,4 +1,10 @@
 const cds = require('@sap/cds')
+
+const dynaSDK = require('@dynatrace/oneagent-sdk')
+const dyna = dynaSDK.createInstance()
+
+console.log("Dynatrace state: " + dyna.getCurrentState())
+
 const proxy = require('@sap/cds-odata-v2-adapter-proxy')
 
 global.__base = __dirname + "/"
@@ -6,9 +12,13 @@ console.log(global.__base)
 
 console.log(`CDS Custom Boostrap from /srv/server.js`)
 
+// Handling exceptions
 process.on('uncaughtException', function (err) {
     console.error(err.name + ': ' + err.message, err.stack.replace(/.*\n/, '\n')) // eslint-disable-line
 })
+
+const TextBundle = require("@sap/textbundle").TextBundle
+global.__bundle = new TextBundle("../_i18n/i18n", require("./utils/locale").getLocale())
 
 // Specifying the services in the proxy to handle odata/v2 metadata
 cds.on('bootstrap', app => app.use(proxy({

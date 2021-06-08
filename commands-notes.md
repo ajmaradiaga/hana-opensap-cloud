@@ -209,3 +209,13 @@ $ cds build
 $ cd db; npm start
 $ cd ..; cds serve
 ```
+
+## Part 11 - Customising Express
+
+Added utilities to enhance monitoring and logging of our cloud native service. Components included in /srv/server - healthCheck.js and overloadProtection.js
+
+```bash
+$ npm install
+$ cds build
+$ cds serve
+```
