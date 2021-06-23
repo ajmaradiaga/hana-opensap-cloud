@@ -1,91 +1,90 @@
-## Generated mta.yaml based on template version 0.4.0
-## appName = hana-opensap-cloud
-## language=nodejs; multiTenant=false
-## approuter=
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: hana-opensap-cloud
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+- name: hana-opensap-cloud-srv
+  type: nodejs
+  path: srv
+  requires:
+  - name: hana-opensap-cloud-db
+  provides:
+  - name: srv_api
+    properties:
+      url: ${default-url}
+- name: hana-opensap-cloud-db-deployer
+  type: hdb
+  path: db
+  requires:
+  - name: hana-opensap-cloud-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: user_db
+  type: hdb
+  path: user_db
+  requires:
+  - name: hana-opensap-cloud-user-db
+  parameters:
+    app-name: hana-opensap-cloud-user-db
+- name: hana-opensap-cloud-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: hana-opensap-cloud-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - fioripodemo.zip
+      name: fioripodemo
+      target-path: resources/
+- name: fioripodemo
+  type: html5
+  path: app/fiori-po-demo
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: hana-opensap-cloud-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-service-name: ${service-name}
+- name: hana-opensap-cloud-user-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    config:
+      schema: OPENSAP_HANA_USER
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    user-container-name: ${service-name}
+- name: cross-container-service-1
+  type: org.cloudfoundry.existing-service
+  parameters:
+    service-name: CROSS_SCHEMA_SFLIGHT
+  properties:
+    ServiceName_1: ${service-name}
+- name: hana-opensap-cloud-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: hana-opensap-cloud-html5-srv
+    service-plan: app-host
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
-   
 build-parameters:
   before-all:
-   - builder: custom
-     commands:
-      - npm install --production
-      - npx -p @sap/cds-dk cds build --production
-
-modules:
- # --------------------- SERVER MODULE ------------------------
- - name: hana-opensap-cloud-srv
- # ------------------------------------------------------------
-   type: nodejs
-   path: srv
-   requires:
-    # Resources extracted from CAP configuration
-    - name: hana-opensap-cloud-db
-   provides:
-    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
-      properties:
-        srv-url: ${default-url}
-
- # -------------------- SIDECAR MODULE ------------------------
- - name: hana-opensap-cloud-db-deployer
- # ------------------------------------------------------------
-   type: hdb
-   path: db  
-   parameters:
-     buildpack: nodejs_buildpack
-   requires:
-    # 'hana' and 'xsuaa' resources extracted from CAP configuration
-    - name: hana-opensap-cloud-db
-
-  # -------------------- USER DB MODULE ------------------------
- - name: user_db
- # ------------------------------------------------------------
-   type: hdb
-   path: user_db  
-   parameters:
-     app-name: hana-opensap-cloud-user-db  
-   requires:
-    # 'hana' and 'xsuaa' resources extracted from CAP configuration
-    - name: hana-opensap-cloud-user-db
-
-
-resources:
- # services extracted from CAP configuration
- # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
-# ------------------------------------------------------------
- - name: hana-opensap-cloud-db
-# ------------------------------------------------------------
-   type: com.sap.xs.hdi-container
-   parameters:
-     service: hana  # or 'hanatrial' on trial landscapes
-     service-plan: hdi-shared
-   properties:
-     hdi-service-name: ${service-name}
-  
-# ------------------------------------------------------------
- - name: hana-opensap-cloud-user-db
-# ------------------------------------------------------------
-   type: com.sap.xs.hdi-container
-   parameters:
-     service: hana  # or 'hanatrial' on trial landscapes
-     service-plan: hdi-shared
-     config:
-      schema: OPENSAP_HANA_USER
-   properties:
-     user-container-name: ${service-name}
-
-# ------------------------------------------------------------
- - name: cross-container-service-1
-# ------------------------------------------------------------  
-   type: org.cloudfoundry.existing-service
-   parameters:
-     service-name: CROSS_SCHEMA_SFLIGHT
-   properties:
-     ServiceName_1: '${service-name}'   
-
-
-
+  - builder: custom
+    commands:
+    - npm install --production
+    - npx -p @sap/cds-dk cds build --production

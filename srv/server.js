@@ -52,26 +52,26 @@ module.exports = async (o) => {
     }
 
     //CDS REST Handler
-    let restURL = "/rest/"
-    cds.serve('POService')
-        .from(global.__base + "/gen/csn.json")
-        .to("rest")
-        .at(restURL + 'POService')
-        .with(require("./handlers/po-service"))        
-        .in(app)
-        .catch((err) => {
-            app.logger.error(err);
-        })
+    // let restURL = "/rest/"
+    // cds.serve('POService')
+    //     .from(global.__base + "/gen/csn.json")
+    //     .to("rest")
+    //     .at(restURL + 'POService')
+    //     .with(require("./handlers/po-service"))        
+    //     .in(app)
+    //     .catch((err) => {
+    //         app.logger.error(err);
+    //     })
 
-    cds.serve('MasterDataService')
-        .from(global.__base + "/gen/csn.json")
-        .to("rest")
-        .at(restURL + 'MasterDataService')
-        .with(require("./handlers/md-service"))          
-        .in(app)
-        .catch((err) => {
-            app.logger.error(err);
-        })
+    // cds.serve('MasterDataService')
+    //     .from(global.__base + "/gen/csn.json")
+    //     .to("rest")
+    //     .at(restURL + 'MasterDataService')
+    //     .with(require("./handlers/md-service"))          
+    //     .in(app)
+    //     .catch((err) => {
+    //         app.logger.error(err);
+    //     })
 
     o.app.httpServer = await cds.server(o)
 
